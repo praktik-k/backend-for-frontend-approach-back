@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import transformCountry from "../converters/transform-country";
 
 const BASE_URL = 'https://restcountries.com/v2/';
 
@@ -17,7 +18,15 @@ export const getCountryByName = async (req: Request, res: Response) => {
 
     const data = await response.json()
 
-    res.send(data)
+    const country = data[0]
+
+    if (!country) {
+        throw new Error('no country')
+    }
+
+    const preparedCountry = transformCountry( country )
+
+    res.send(preparedCountry)
 }
 
 export const getCountriesByCode = async (req: Request, res: Response) => {
